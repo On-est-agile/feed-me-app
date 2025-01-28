@@ -1,9 +1,13 @@
 import React from "react";
 import gobs from "../assets/images/gobs.jpg";
+import Return from "../components/return.js";
 
 function DeviceInfo() {
     return (
       <div style={styles.container}>
+        <div style={styles.returnButtonContainer}>
+            <Return />
+        </div>
         <h1 style={styles.title}>Gamelle 1</h1>
         <div style={styles.avatarContainer}>
           <img src={gobs} alt="Avatar du chat" style={styles.avatar} />
@@ -38,6 +42,12 @@ function DeviceInfo() {
       paddingTop: "40px",
       fontFamily: "'Arial', sans-serif",
     },
+    returnButtonContainer: {
+        position: "absolute", // Place le bouton par rapport au conteneur
+        top: "20px", // Décalé de 20px du haut
+        left: "20px", // Décalé de 20px de la gauche
+        zIndex: 10, // Assure que le bouton est au-dessus des autres éléments
+      },
     title: {
       fontSize: "2rem",
       fontWeight: "bold",
