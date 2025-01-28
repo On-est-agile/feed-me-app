@@ -1,8 +1,16 @@
 import React from "react";
 import gobs from "../assets/images/gobs.jpg";
 import Return from "../components/return.js";
+import { publishMessage } from "../services/MqttHandler.js";
 
 function DeviceInfo() {
+
+    const handleButtonClick = (value) => {
+        const topic = `gamelle1/remplissageAdd/${value}`;
+        publishMessage(topic, `Ajout ${value}`);
+        console.log(`Message publié sur ${topic}`);
+      };
+
     return (
       <div style={styles.container}>
         <div style={styles.returnButtonContainer}>
@@ -23,12 +31,16 @@ function DeviceInfo() {
         <div style={styles.refillSection}>
           <h2 style={styles.refillTitle}>Remettre des croquettes ?</h2>
           <div style={styles.buttonContainer}>
-            {[1, 2, 3, 4, 5].map((number) => (
-              <button key={number} style={styles.button}>
-                {number}
-              </button>
-            ))}
-          </div>
+          {[1, 2, 3, 4, 5].map((number) => (
+            <button
+              key={number}
+              style={styles.button}
+              onClick={() => handleButtonClick(number)}
+            >
+              {number}
+            </button>
+          ))}
+        </div>
         </div>
       </div>
     );
