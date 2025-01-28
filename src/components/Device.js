@@ -1,8 +1,15 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 function Device() {
+const navigate = useNavigate();
+
+const handleClick = () => {
+    navigate("/device-info");
+  };
+
   return (
-    <div style={styles.deviceContainer}>
+    <div style={styles.deviceContainer} onClick={handleClick}>
       <h2 style={styles.title}>Gamelle 1</h2>
       <p style={styles.percentage}>Remplissage : 75%</p>
     </div>
