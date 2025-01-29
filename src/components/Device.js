@@ -1,17 +1,30 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-function Device() {
+function Device({device, message}) {
 const navigate = useNavigate();
+let amountValue = "N/A";
+try {
+  if (message && message.trim() !== "") { // Vérifie si `message` est valide
+    const parsedMessage = JSON.parse(message);
+    if (parsedMessage.amount !== undefined) {
+      amountValue = parsedMessage.amount;
+    }
+  } else {
+    console.warn("Message MQTT vide ou invalide, impossible de parser.");
+  }
+} catch (error) {
+  console.error("Erreur lors de la conversion du message en JSON :", error);
+}
 
 const handleClick = () => {
-    navigate("/device-info");
+    navigate(`/device-info/${device.id}`);
   };
 
   return (
     <div style={styles.deviceContainer} onClick={handleClick}>
-      <h2 style={styles.title}>Gamelle 1</h2>
-      <p style={styles.percentage}>Remplissage : 75%</p>
+      <h2 style={styles.title}>{device.gamelle}</h2>
+      <p style={styles.percentage}>Remplissage : {amountValue}</p>
     </div>
   );
 }

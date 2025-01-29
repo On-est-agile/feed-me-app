@@ -1,13 +1,23 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 import Device from "../components/Device";
+import DeviceService from "../services/HandleDevices";
 
-function Home() {
+function Home({ message }) {
+
+  const [devices, setDevices] = useState([]);
+
+  useEffect(() => {
+    const data = DeviceService.getDevices();
+    setDevices(data);
+  }, []);
+
   return (
     <div style={styles.container}>
       <h1 style={styles.title}>Mes appareils</h1>
       <div style={styles.devices}>
-        <Device />
-        <Device />
+      {devices.map((device) => (
+          <Device key={device.id} device={device} message={message} />
+        ))}
       </div>
     </div>
   );
