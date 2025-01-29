@@ -1,16 +1,20 @@
 import React from "react";
 import gobs from "../assets/images/gobs.jpg";
 import Return from "../components/return.js";
-import { publishMessage } from "../services/MqttHandler.js";
+import { publishMessage } from "../services/MqttHandler.js"
 
 function DeviceInfo() {
-
+  const CLIENT_SECRET = process.env.REACT_APP_CLIENT_SECRET;
+  console.log(CLIENT_SECRET);
     const handleButtonClick = (value) => {
-        const topic = `gamelle1/remplissageAdd/${value}`;
-        publishMessage(topic, `Ajout ${value}`);
-        console.log(`Message publié sur ${topic}`);
+      console.log(`Bouton cliqué : ${value}`);
+        publishMessage(
+          `feedme/${CLIENT_SECRET}/commands/feeder/dispense`,
+          JSON.stringify({
+            amount: 25* value,
+          })
+        );
       };
-
     return (
       <div style={styles.container}>
         <div style={styles.returnButtonContainer}>
