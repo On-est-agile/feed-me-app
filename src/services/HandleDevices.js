@@ -1,34 +1,32 @@
-import devices from "../data/devices.json"; // Import direct du JSON
+const API_URL = "http://localhost:5000";
 
-// Lire les devices
-const getDevices = () => {
-  return devices;
+// 🔹 Lire les devices depuis le serveur
+const getDevices = async () => {
+  const res = await fetch(`${API_URL}/devices`);
+  return res.json();
 };
 
-// Ajouter un device (simule l'ajout)
-const addDevice = (name) => {
-  const newDevice = { id: devices.length + 1, gamelle: `Gamelle${devices.length + 1}`, name, remplissage: 100 };
-  devices.push(newDevice);
-  return newDevice;
+// 🔹 Modifier un device
+const updateDeviceName = async (id, name) => {
+  await fetch(`${API_URL}/devices/${id}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name }),
+  });
 };
 
-// Modifier le name d'un device
-const updateDeviceName = (id, name) => {
-  const device = devices.find((d) => d.id === id);
-  if (device) {
-    device.name = name;
-  }
-  return device;
+// 🔹 Ajouter un device
+const addDevice = async (name) => {
+  await fetch(`${API_URL}/devices`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name }),
+  });
 };
 
-// Supprimer un device
-const deleteDevice = (id) => {
-  const index = devices.findIndex((d) => d.id === id);
-  if (index !== -1) {
-    devices.splice(index, 1);
-  }
+// 🔹 Supprimer un device
+const deleteDevice = async (id) => {
+  await fetch(`${API_URL}/devices/${id}`, { method: "DELETE" });
 };
 
-const DeviceService = { getDevices, addDevice, updateDeviceName, deleteDevice };
-
-export default DeviceService;
+export default { getDevices, addDevice, updateDeviceName, deleteDevice };

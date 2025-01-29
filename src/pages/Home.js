@@ -7,9 +7,13 @@ function Home({ message }) {
   const [devices, setDevices] = useState([]);
 
   useEffect(() => {
-    const data = DeviceService.getDevices();
-    setDevices(data);
-  }, []);
+    const fetchDevices = async () => {
+      const data = await DeviceService.getDevices();
+      setDevices(Array.isArray(data) ? data : []);
+    };
+
+    fetchDevices();
+  }, [])
 
   return (
     <div style={styles.container}>
