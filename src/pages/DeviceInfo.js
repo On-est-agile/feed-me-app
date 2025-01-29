@@ -3,10 +3,10 @@ import { useParams } from "react-router-dom";
 import gobs from "../assets/images/gobs.jpg";
 import Return from "../components/return.js";
 import { publishMessage } from "../services/MqttHandler.js";
-import HandleDevices from "../services/HandleDevices";
+import devicesData from "../data/devices.json"; // 🔹 Import JSON local si MQTT ne fonctionne pas
 
-function DeviceInfo({ message }) {
-  const { id } = useParams(); // 🔹 Récupère l'ID de l'URL
+function DeviceInfo({ devices, balance }) {
+  const { id } = useParams(); // 🔹 `id` est le `name` du device
   const [device, setDevice] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [newName, setNewName] = useState("");
@@ -14,20 +14,32 @@ function DeviceInfo({ message }) {
   const CLIENT_SECRET = process.env.REACT_APP_CLIENT_SECRET;
 
   useEffect(() => {
-    const fetchDevice = async () => {
-      const devices = await HandleDevices.getDevices();
-      const foundDevice = devices.find((d) => d.id === parseInt(id));
+    try {
+      let allDevices = [];
+
+      if (devices && devices.trim() !== "") {
+        // 🔹 Si MQTT envoie des données, on les utilise
+        const parsedDevices = JSON.parse(devices);
+        allDevices = parsedDevices.feeders || []; // 🔹 Récupère uniquement `feeders`
+      } else {
+        // 🔹 Si pas de données MQTT, on prend `devices.json`
+        console.log("⚠️ Aucune donnée MQTT, utilisation de devices.json");
+        allDevices = devicesData.feeders || [];
+      }
+
+      // 🔹 Chercher le device par `name`
+      const foundDevice = allDevices.find((d) => d.name === id);
       setDevice(foundDevice);
       setNewName(foundDevice ? foundDevice.name : "");
-    };
-
-    fetchDevice();
-  }, [id]); // 🔹 Recharger lorsque `id` change
+    } catch (error) {
+      console.error("❌ Erreur lors de la récupération du device :", error);
+    }
+  }, [id, devices]);
 
   let amountValue = "N/A";
   try {
-    if (message && message.trim() !== "") { // Vérifie si `message` est valide
-      const parsedMessage = JSON.parse(message);
+    if (balance && balance.trim() !== "") {
+      const parsedMessage = JSON.parse(balance);
       if (parsedMessage.amount !== undefined) {
         amountValue = parsedMessage.amount;
       }
@@ -54,8 +66,7 @@ function DeviceInfo({ message }) {
     setIsEditing(true);
   };
 
-  const handleSaveClick = async () => {
-    await HandleDevices.updateDeviceName(device.id, newName);
+  const handleSaveClick = () => {
     setIsEditing(false);
     setDevice({ ...device, name: newName }); // 🔹 Met à jour l'affichage localement
   };
@@ -66,7 +77,7 @@ function DeviceInfo({ message }) {
         <Return />
       </div>
 
-      <h1 style={styles.title}>{device.gamelle}</h1>
+      <h1 style={styles.title}>{device.name}</h1>
 
       <div style={styles.avatarContainer}>
         <img src={gobs} alt="Avatar du chat" style={styles.avatar} />

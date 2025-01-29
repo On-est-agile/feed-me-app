@@ -1,27 +1,40 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import Device from "../components/Device";
-import DeviceService from "../services/HandleDevices";
+import devicesData from "../data/devices.json"; // 🔹 Import du JSON local en cas de fallback
 
-function Home({ message }) {
-
-  const [devices, setDevices] = useState([]);
+function Home({ balance, devices }) {
+  const [parsedDevices, setParsedDevices] = useState([]);
 
   useEffect(() => {
-    const fetchDevices = async () => {
-      const data = await DeviceService.getDevices();
-      setDevices(Array.isArray(data) ? data : []);
-    };
+    try {
+      if (devices && devices.trim() !== "") {
+        // 🔹 Si MQTT envoie des données, on les utilise
+        const parsedData = JSON.parse(devices);
+        console.log("📡 Données MQTT reçues :", parsedData);
 
-    fetchDevices();
-  }, [])
+        setParsedDevices(parsedData.feeders || []); // 🔹 Récupère uniquement `feeders`
+      } else {
+        // 🔹 Si pas de données MQTT, on prend celles du fichier JSON local
+        console.log("⚠️ Aucune donnée MQTT, utilisation de devices.json");
+        setParsedDevices(devicesData.feeders || []);
+      }
+    } catch (error) {
+      console.error("❌ Erreur lors du parsing des devices :", error);
+      setParsedDevices(devicesData.feeders || []); // 🔹 Fallback sur JSON local
+    }
+  }, [devices]);
 
   return (
     <div style={styles.container}>
       <h1 style={styles.title}>Mes appareils</h1>
       <div style={styles.devices}>
-      {devices.map((device) => (
-          <Device key={device.id} device={device} message={message} />
-        ))}
+        {parsedDevices.length > 0 ? (
+          parsedDevices.map((device, index) => (
+            <Device key={index} device={device} message={balance} />
+          ))
+        ) : (
+          <p>🔄 Chargement des appareils...</p>
+        )}
       </div>
     </div>
   );
@@ -39,7 +52,7 @@ const styles = {
     fontSize: "2rem",
     fontWeight: "bold",
     textAlign: "center",
-    color: "#333", 
+    color: "#333",
     borderBottom: "2px solid #ADD8E6",
     paddingBottom: "10px",
     width: "fit-content",
@@ -52,8 +65,8 @@ const styles = {
     alignItems: "center",
     gap: "20px",
     marginTop: "20px",
-    width: "100%", 
-    maxWidth: "900px", 
+    width: "100%",
+    maxWidth: "900px",
   },
 };
 
