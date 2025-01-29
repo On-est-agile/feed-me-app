@@ -1,11 +1,33 @@
-import React from "react";
+import React, {useState} from "react";
 import gobs from "../assets/images/gobs.jpg";
 import Return from "../components/return.js";
-import { publishMessage } from "../services/MqttHandler.js"
+/* import EditButton from "../components/EditButton.js"; */
+import { useParams } from "react-router-dom";
+import { publishMessage } from "../services/MqttHandler.js";
+import HandleDevices from "../services/HandleDevices";
 
-function DeviceInfo() {
+function DeviceInfo({ message }) {
+  const { id } = useParams(); // 🔹 Récupère l'ID de l'URL
+  const device = HandleDevices.getDevices().find((d) => d.id === parseInt(id));
   const CLIENT_SECRET = process.env.REACT_APP_CLIENT_SECRET;
-  console.log(CLIENT_SECRET);
+
+  // 🔹 État pour la modification du nom
+  const [isEditing, setIsEditing] = useState(false);
+  const [newName, setNewName] = useState(device ? device.name : "");
+
+  let amountValue = "N/A";
+  try {
+    if (message && message.trim() !== "") { // Vérifie si `message` est valide
+      const parsedMessage = JSON.parse(message);
+      if (parsedMessage.amount !== undefined) {
+        amountValue = parsedMessage.amount;
+      }
+    } else {
+      console.warn("Message MQTT vide ou invalide, impossible de parser.");
+    }
+  } catch (error) {
+    console.error("Erreur lors de la conversion du message en JSON :", error);
+  }
     const handleButtonClick = (value) => {
       console.log(`Bouton cliqué : ${value}`);
         publishMessage(
@@ -15,21 +37,56 @@ function DeviceInfo() {
           })
         );
       };
+      if (!device) {
+        return <h2>Gamelle introuvable</h2>;
+      }
+
+  // 🔹 Fonction pour activer la modification du nom
+  const handleEditClick = () => {
+    setIsEditing(true);
+  };
+
+  // 🔹 Fonction pour sauvegarder le nouveau nom
+  const handleSaveClick = () => {
+    HandleDevices.updateDeviceName(device.id, newName);
+    setIsEditing(false);
+  };
+
+    
     return (
       <div style={styles.container}>
         <div style={styles.returnButtonContainer}>
             <Return />
         </div>
-        <h1 style={styles.title}>Gamelle 1</h1>
+        {/* <div style={styles.editButtonContainer}>
+        <EditButton />
+      </div> */}
+        <h1 style={styles.title}>{device.gamelle}</h1>
         <div style={styles.avatarContainer}>
           <img src={gobs} alt="Avatar du chat" style={styles.avatar} />
         </div>
         <div style={styles.infoContainer}>
+        <p style={styles.infoText}>
+          <strong>Nom du chat :</strong>{" "}
+          {isEditing ? (
+            <>
+              <input
+                type="text"
+                value={newName}
+                onChange={(e) => setNewName(e.target.value)}
+                style={styles.input}
+              />
+              <button onClick={handleSaveClick} style={styles.saveButton}>✅</button>
+            </>
+          ) : (
+            <>
+              {device.name}{" "}
+              <button onClick={handleEditClick} style={styles.editButton}>✏️</button>
+            </>
+          )}
+        </p>
           <p style={styles.infoText}>
-            <strong>Nom du chat :</strong> Georges
-          </p>
-          <p style={styles.infoText}>
-            <strong>Remplissage :</strong> 75%
+            <strong>Remplissage :</strong> {amountValue}
           </p>
         </div>
         <div style={styles.refillSection}>
@@ -64,6 +121,12 @@ function DeviceInfo() {
         left: "20px", // Décalé de 20px de la gauche
         zIndex: 10, // Assure que le bouton est au-dessus des autres éléments
       },
+      /* editButtonContainer: {
+        position: "absolute",
+        top: "20px",
+        right: "20px",
+        zIndex: 10,
+      }, */
     title: {
       fontSize: "2rem",
       fontWeight: "bold",
