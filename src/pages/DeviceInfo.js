@@ -71,15 +71,14 @@ function DeviceInfo({ devices, balance }) {
   const handleSaveClick = () => {
     setIsEditing(false);
 
-    // 🔹 Envoi du nouveau nom au broker MQTT
-    /* publishMessage(
-      `feedme/${CLIENT_SECRET}/${device.id}/commands/feeder/rename`,
+     publishMessage(
+      `feedme/${CLIENT_SECRET}/feeders/${device.id}/rename`,
       JSON.stringify({
         name: newName,
       })
-    ); */
+    );
 
-    setDevice({ ...device, name: newName }); // 🔹 Met à jour l'affichage localement
+    setDevice({ ...device, name: newName });
   };
 
   return (
