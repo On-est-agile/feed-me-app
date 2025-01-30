@@ -5,14 +5,15 @@ function Device({ device, message }) {
   const navigate = useNavigate();
   let amountValue = "N/A";
 
-  // 🔹 Vérifier si `device` est bien défini (sinon valeurs par défaut)
+
+  const deviceid = device?.id || "Nom inconnu";
   const deviceName = device?.name || "Nom inconnu";
 
   try {
     if (message && message.trim() !== "") {
       const parsedMessage = JSON.parse(message);
       if (parsedMessage.amount !== undefined) {
-        amountValue = parsedMessage.amount + "%"; // 🔹 Ajout du `%` pour indiquer le remplissage
+        amountValue = parsedMessage.amount + "%";
       }
     }
   } catch (error) {
@@ -20,7 +21,7 @@ function Device({ device, message }) {
   }
 
   const handleClick = () => {
-    navigate(`/device-info/${deviceName}`);
+    navigate(`/device-info/${deviceid}`);
   };
 
   return (

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import gobs from "../assets/images/gobs.jpg";
+import cat from "../assets/images/cat-56.png";
 import Return from "../components/return.js";
 import { publishMessage } from "../services/MqttHandler.js";
 import devicesData from "../data/devices.json"; // 🔹 Import JSON local si MQTT ne fonctionne pas
@@ -20,7 +20,8 @@ function DeviceInfo({ devices, balance }) {
       if (devices && devices.trim() !== "") {
         // 🔹 Si MQTT envoie des données, on les utilise
         const parsedDevices = JSON.parse(devices);
-        allDevices = parsedDevices.feeders || []; // 🔹 Récupère uniquement `feeders`
+        allDevices = parsedDevices.feeders || [];
+        console.log("Donnée :", parsedDevices);
       } else {
         // 🔹 Si pas de données MQTT, on prend `devices.json`
         console.log("⚠️ Aucune donnée MQTT, utilisation de devices.json");
@@ -28,9 +29,10 @@ function DeviceInfo({ devices, balance }) {
       }
 
       // 🔹 Chercher le device par `name`
-      const foundDevice = allDevices.find((d) => d.name === id);
+      const parsedId = parseInt(id, 10);
+      const foundDevice = allDevices.find((d) => d.id === parsedId);
       setDevice(foundDevice);
-      setNewName(foundDevice ? foundDevice.name : "");
+      setNewName(foundDevice.name);
     } catch (error) {
       console.error("❌ Erreur lors de la récupération du device :", error);
     }
@@ -51,9 +53,9 @@ function DeviceInfo({ devices, balance }) {
   const handleButtonClick = (value) => {
     console.log(`Bouton cliqué : ${value}`);
     publishMessage(
-      `feedme/${CLIENT_SECRET}/commands/feeder/dispense`,
+      `feedme/${CLIENT_SECRET}/${device.id}/commands/feeder/dispense`,
       JSON.stringify({
-        amount: 25 * value,
+        amount: value,
       })
     );
   };
@@ -68,6 +70,15 @@ function DeviceInfo({ devices, balance }) {
 
   const handleSaveClick = () => {
     setIsEditing(false);
+
+    // 🔹 Envoi du nouveau nom au broker MQTT
+    /* publishMessage(
+      `feedme/${CLIENT_SECRET}/${device.id}/commands/feeder/rename`,
+      JSON.stringify({
+        name: newName,
+      })
+    ); */
+
     setDevice({ ...device, name: newName }); // 🔹 Met à jour l'affichage localement
   };
 
@@ -77,10 +88,10 @@ function DeviceInfo({ devices, balance }) {
         <Return />
       </div>
 
-      <h1 style={styles.title}>{device.name}</h1>
+      <h1 style={styles.title}>Gamelle de {device.name}</h1>
 
       <div style={styles.avatarContainer}>
-        <img src={gobs} alt="Avatar du chat" style={styles.avatar} />
+        <img src={cat} alt="Avatar du chat" style={styles.avatar} />
       </div>
 
       <div style={styles.infoContainer}>
