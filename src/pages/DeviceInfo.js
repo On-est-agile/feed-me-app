@@ -82,19 +82,19 @@ function DeviceInfo({ devices, balance }) {
   };
 
   return (
-    <div style={styles.container}>
-      <div style={styles.returnButtonContainer}>
+    <div className="device-info-container">
+      <div className="device-info-return-button">
         <Return />
       </div>
 
-      <h1 style={styles.title}>Gamelle de {device.name}</h1>
+      <h1 className="device-info-title">Gamelle de {device.name}</h1>
 
-      <div style={styles.avatarContainer}>
-        <img src={cat} alt="Avatar du chat" style={styles.avatar} />
+      <div className="device-info-avatar-container ">
+        <img src={cat} alt="Avatar du chat" className="device-info-avatar" />
       </div>
 
-      <div style={styles.infoContainer}>
-        <p style={styles.infoText}>
+      <div className="device-info-info-container">
+        <p className="device-info-info-text">
           <strong>Nom du chat :</strong>{" "}
           {isEditing ? (
             <>
@@ -102,27 +102,27 @@ function DeviceInfo({ devices, balance }) {
                 type="text"
                 value={newName}
                 onChange={(e) => setNewName(e.target.value)}
-                style={styles.input}
+                className="device-info-input"
               />
-              <button onClick={handleSaveClick} style={styles.saveButton}>✅</button>
+              <button onClick={handleSaveClick} className="device-info-save-button">✅</button>
             </>
           ) : (
             <>
               {device.name}{" "}
-              <button onClick={handleEditClick} style={styles.editButton}>✏️</button>
+              <button onClick={handleEditClick} className="device-info-edit-button">✏️</button>
             </>
           )}
         </p>
-        <p style={styles.infoText}>
+        <p className="device-info-info-text">
           <strong>Remplissage :</strong> {amountValue}
         </p>
       </div>
 
-      <div style={styles.refillSection}>
-        <h2 style={styles.refillTitle}>Remettre des croquettes ?</h2>
-        <div style={styles.buttonContainer}>
+      <div className="device-info-refill-section">
+        <h2 className="device-info-refill-title">Remettre des croquettes ?</h2>
+        <div className="device-info-button-container">
           {[1, 2, 3, 4, 5].map((number) => (
-            <button key={number} style={styles.button} onClick={() => handleButtonClick(number)}>
+            <button key={number} className="device-info-button" onClick={() => handleButtonClick(number)}>
               {number}
             </button>
           ))}
@@ -131,99 +131,5 @@ function DeviceInfo({ devices, balance }) {
     </div>
   );
 }
-
-const styles = {
-  container: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    paddingTop: "40px",
-    fontFamily: "'Arial', sans-serif",
-  },
-  returnButtonContainer: {
-    position: "absolute",
-    top: "20px",
-    left: "20px",
-    zIndex: 10,
-  },
-  title: {
-    fontSize: "2rem",
-    fontWeight: "bold",
-    textAlign: "center",
-    color: "#333",
-    borderBottom: "2px solid #ADD8E6",
-    paddingBottom: "10px",
-    width: "fit-content",
-    marginBottom: "20px",
-  },
-  avatarContainer: {
-    width: "150px",
-    height: "150px",
-    borderRadius: "10px",
-    overflow: "hidden",
-    marginBottom: "20px",
-    boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.2)",
-  },
-  avatar: {
-    width: "100%",
-    height: "100%",
-    objectFit: "cover",
-  },
-  infoContainer: {
-    textAlign: "center",
-  },
-  infoText: {
-    fontSize: "1rem",
-    color: "#555",
-    marginBottom: "10px",
-  },
-  editButton: {
-    border: "none",
-    background: "transparent",
-    fontSize: "1rem",
-    cursor: "pointer",
-    marginLeft: "8px",
-  },
-  input: {
-    fontSize: "1rem",
-    padding: "5px",
-    border: "1px solid #ADD8E6",
-    borderRadius: "5px",
-  },
-  saveButton: {
-    border: "none",
-    background: "transparent",
-    fontSize: "1rem",
-    cursor: "pointer",
-    marginLeft: "8px",
-  },
-  refillSection: {
-    marginTop: "30px",
-    textAlign: "center",
-  },
-  refillTitle: {
-    fontSize: "1.5rem",
-    color: "#333",
-    marginBottom: "20px",
-  },
-  buttonContainer: {
-    display: "flex",
-    justifyContent: "center",
-    gap: "10px",
-  },
-  button: {
-    width: "40px",
-    height: "40px",
-    backgroundColor: "#ADD8E6",
-    border: "none",
-    borderRadius: "5px",
-    fontSize: "1rem",
-    fontWeight: "bold",
-    color: "#fff",
-    cursor: "pointer",
-    boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
-    transition: "background-color 0.3s ease",
-  },
-};
 
 export default DeviceInfo;
