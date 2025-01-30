@@ -16,7 +16,6 @@ function App() {
 
     // 2. Récupérer la liste des feeders
     subscribeToTopic(`feedme/${CLIENT_SECRET}/feeders`, (receivedMessage) => {
-      console.log("📡 Feeders reçus :", receivedMessage);
       setDevices(receivedMessage);
 
       try {
@@ -25,11 +24,9 @@ function App() {
           parsedDevices.feeders.forEach((device) => {
             const topic = `feedme/${CLIENT_SECRET}/${device.id}/sensors/balance_bottom`;
 
-            console.log(`📡 Souscription au topic: ${topic}`);
 
             // 3. Souscrire à la balance de CHAQUE device
             subscribeToTopic(topic, (balanceMessage) => {
-              console.log(`📡 Balance reçue pour ${device.id}:`, balanceMessage);
               setBalances((prevBalances) => ({
                 ...prevBalances,
                 [device.id]: JSON.parse(balanceMessage).amount, // 🔹 Associe la balance à l'ID du device

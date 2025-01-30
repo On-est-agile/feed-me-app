@@ -21,7 +21,6 @@ function DeviceInfo({ devices, balances }) {
         // 🔹 Si MQTT envoie des données, on les utilise
         const parsedDevices = JSON.parse(devices);
         allDevices = parsedDevices.feeders || [];
-        console.log("📡 Donnée MQTT reçue :", parsedDevices);
       } else {
         // 🔹 Si pas de données MQTT, on prend `devices.json`
         console.log("⚠️ Aucune donnée MQTT, utilisation de devices.json");
@@ -54,7 +53,6 @@ function DeviceInfo({ devices, balances }) {
   }
 
   const handleButtonClick = (value) => {
-    console.log(`Bouton cliqué : ${value}`);
     publishMessage(
       `feedme/${CLIENT_SECRET}/${device.id}/commands/feeder/dispense`,
       JSON.stringify({

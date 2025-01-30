@@ -11,7 +11,6 @@ function Home({ balances, devices }) {
       if (devices && devices.trim() !== "") {
         // 🔹 Si MQTT envoie des données, on les utilise
         const parsedData = JSON.parse(devices);
-        console.log("📡 Données MQTT reçues :", parsedData);
 
         setParsedDevices(parsedData.feeders || []); // 🔹 Récupère uniquement `feeders`
       } else {
