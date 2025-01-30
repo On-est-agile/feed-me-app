@@ -164,6 +164,7 @@ code {
   padding-bottom: 10px;
   width: fit-content;
   margin-bottom: 20px;
+  font-family: 'Dancing Script', cursive;
 }
 
 .device-info-avatar-container {
@@ -220,9 +221,10 @@ code {
 }
 
 .device-info-refill-title {
-  font-size: 1.5rem;
+  font-size: 2rem;
   color: #333;
   margin-bottom: 20px;
+  font-family: 'Dancing Script', cursive;
 }
 
 .device-info-button-container {
