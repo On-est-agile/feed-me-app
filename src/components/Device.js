@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 
 function Device({ device, message }) {
   const navigate = useNavigate();
-  let amountValue = "N/A";
-
+  let state = "N/A"; // 🔹 Par défaut, on affiche N/A
+  let amountValue = null;
 
   const deviceid = device?.id || "Nom inconnu";
   const deviceName = device?.name || "Nom inconnu";
@@ -13,8 +13,17 @@ function Device({ device, message }) {
   try {
     if (message && message.trim() !== "") {
       const parsedMessage = JSON.parse(message);
-      if (parsedMessage.amount !== undefined) {
-        amountValue = parsedMessage.amount + "%";
+      if (
+        parsedMessage.amount !== undefined &&
+        !isNaN(parsedMessage.amount) // 🔹 Vérifier que c'est bien un nombre
+      ) {
+        amountValue = parsedMessage.amount;
+
+        if (amountValue >= 0 && amountValue < 20) {
+          state = "🔴"; // Rouge si entre 0 et 20
+        } else {
+          state = "🟢"; // Vert si supérieur à 20
+        }
       }
     }
   } catch (error) {
@@ -28,7 +37,9 @@ function Device({ device, message }) {
   return (
     <div className="device-container" onClick={handleClick}>
       <h2 className="device-title">{deviceName}</h2>
-      <p className="device-percentage">Remplissage : {amountValue}</p>
+      <p className="device-percentage">
+        <strong>État :</strong> {state}
+      </p>
       <p className={deviceUid ? "device-uid" : "device-unpaired"}>
         {deviceUid ? "✔️ Appairé" : "❌ Device non appairé"}
       </p>

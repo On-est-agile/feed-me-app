@@ -3,7 +3,7 @@ import Device from "../components/Device";
 import devicesData from "../data/devices.json"; // 🔹 Import du JSON local en cas de fallback
 import catWalk from "../assets/images/catWalk.png";
 
-function Home({ balance, devices }) {
+function Home({ balances, devices }) {
   const [parsedDevices, setParsedDevices] = useState([]);
 
   useEffect(() => {
@@ -30,8 +30,12 @@ function Home({ balance, devices }) {
       <h1 className="home-title">Mes appareils</h1>
       <div className="home-devices">
         {parsedDevices.length > 0 ? (
-          parsedDevices.map((device, index) => (
-            <Device key={index} device={device} message={balance} />
+          parsedDevices.map((device) => (
+            <Device
+              key={device.id}
+              device={device}
+              message={balances[device.id] ? JSON.stringify({ amount: balances[device.id] }) : JSON.stringify({ amount: "N/A" })} 
+            />
           ))
         ) : (
           <p>🔄 Chargement des appareils...</p>
@@ -43,6 +47,5 @@ function Home({ balance, devices }) {
     </div>
   );
 }
-
 
 export default Home;

@@ -5,8 +5,8 @@ import Return from "../components/return.js";
 import { publishMessage } from "../services/MqttHandler.js";
 import devicesData from "../data/devices.json"; // 🔹 Import JSON local si MQTT ne fonctionne pas
 
-function DeviceInfo({ devices, balance }) {
-  const { id } = useParams(); // 🔹 `id` est le `name` du device
+function DeviceInfo({ devices, balances }) {
+  const { id } = useParams(); // 🔹 Récupère l'ID du device dans l'URL
   const [device, setDevice] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [newName, setNewName] = useState("");
@@ -21,33 +21,36 @@ function DeviceInfo({ devices, balance }) {
         // 🔹 Si MQTT envoie des données, on les utilise
         const parsedDevices = JSON.parse(devices);
         allDevices = parsedDevices.feeders || [];
-        console.log("Donnée :", parsedDevices);
+        console.log("📡 Donnée MQTT reçue :", parsedDevices);
       } else {
         // 🔹 Si pas de données MQTT, on prend `devices.json`
         console.log("⚠️ Aucune donnée MQTT, utilisation de devices.json");
         allDevices = devicesData.feeders || [];
       }
 
-      // 🔹 Chercher le device par `name`
+      // 🔹 Chercher le device par `id`
       const parsedId = parseInt(id, 10);
       const foundDevice = allDevices.find((d) => d.id === parsedId);
-      setDevice(foundDevice);
-      setNewName(foundDevice.name);
+      
+      if (foundDevice) {
+        setDevice(foundDevice);
+        setNewName(foundDevice.name);
+      } else {
+        console.error("❌ Device non trouvé !");
+      }
+
     } catch (error) {
       console.error("❌ Erreur lors de la récupération du device :", error);
     }
   }, [id, devices]);
 
-  let amountValue = "N/A";
-  try {
-    if (balance && balance.trim() !== "") {
-      const parsedMessage = JSON.parse(balance);
-      if (parsedMessage.amount !== undefined) {
-        amountValue = parsedMessage.amount;
-      }
-    }
-  } catch (error) {
-    console.error("Erreur lors de la conversion du message en JSON :", error);
+  // ✅ Chercher la balance associée à `device.id`
+  const amountValue = device ? balances[device.id] || "N/A" : "N/A";
+
+  // 🔴🟢 Définition de la pastille en fonction du `amountValue`
+  let state = "N/A";
+  if (amountValue !== "N/A") {
+    state = amountValue >= 0 && amountValue < 20 ? "🔴" : "🟢";
   }
 
   const handleButtonClick = (value) => {
@@ -70,14 +73,12 @@ function DeviceInfo({ devices, balance }) {
 
   const handleSaveClick = () => {
     setIsEditing(false);
-
-     publishMessage(
+    publishMessage(
       `feedme/${CLIENT_SECRET}/feeders/${device.id}/rename`,
       JSON.stringify({
         name: newName,
       })
     );
-
     setDevice({ ...device, name: newName });
   };
 
@@ -89,7 +90,7 @@ function DeviceInfo({ devices, balance }) {
 
       <h1 className="device-info-title">Gamelle de {device.name}</h1>
 
-      <div className="device-info-avatar-container ">
+      <div className="device-info-avatar-container">
         <img src={cat} alt="Avatar du chat" className="device-info-avatar" />
       </div>
 
@@ -103,6 +104,7 @@ function DeviceInfo({ devices, balance }) {
                 value={newName}
                 onChange={(e) => setNewName(e.target.value)}
                 className="device-info-input"
+                maxLength={16}
               />
               <button onClick={handleSaveClick} className="device-info-save-button">✅</button>
             </>
@@ -113,9 +115,7 @@ function DeviceInfo({ devices, balance }) {
             </>
           )}
         </p>
-        <p className="device-info-info-text">
-          <strong>Remplissage :</strong> {amountValue}
-        </p>
+        <p className="device-info-info-text"><strong> État :</strong> {state}</p>
       </div>
 
       <div className="device-info-refill-section">
