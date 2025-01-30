@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Device from "../components/Device";
 import devicesData from "../data/devices.json"; // 🔹 Import du JSON local en cas de fallback
+import catWalk from "../assets/images/catWalk.png";
 
 function Home({ balance, devices }) {
   const [parsedDevices, setParsedDevices] = useState([]);
@@ -36,6 +37,9 @@ function Home({ balance, devices }) {
           <p>🔄 Chargement des appareils...</p>
         )}
       </div>
+      <footer className="home-footer">
+        <img src={catWalk} alt="Chat marchant" className="home-cat-image" />
+      </footer>
     </div>
   );
 }

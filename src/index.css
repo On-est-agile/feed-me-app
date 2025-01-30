@@ -109,6 +109,7 @@ code {
   padding-bottom: 10px;
   width: fit-content;
   margin-top: 50px;
+  font-family: 'Dancing Script', cursive;
 }
 
 .home-devices {
@@ -122,6 +123,22 @@ code {
   max-width: 900px;
 }
 
+.home-footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: white; /* Assure que le fond est cohérent */
+}
+
+/* Image du chat */
+.home-cat-image {
+  width: 120px; /* Ajuste la taille selon le design */
+  height: auto;
+  opacity: 0.8; /* Légère transparence */
+}
 /* Styles spécifiques à la page DeviceInfo */
 .device-info-container {
   display: flex;
