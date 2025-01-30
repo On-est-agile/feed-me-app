@@ -17,7 +17,7 @@ function LandingPage() {
   };
 
   return (
-    <div style={styles.container}>
+    <div className="landing-container">
       <div
         style={{
           ...styles.topSection,
@@ -25,7 +25,7 @@ function LandingPage() {
           transition: "transform 1s ease",
         }}
       >
-        <h1 style={styles.title}>Feed Me</h1>
+        <h1 className="landing-title">FeedMe</h1>
       </div>
       <div
         style={{
@@ -34,9 +34,9 @@ function LandingPage() {
           transition: "transform 1s ease",
         }}
       >
-        <div style={styles.catPawsContainer}>
-          <img src={longPaw} alt="Left paw" style={styles.catPaw} />
-          <img src={longPaw} alt="Right paw" style={styles.catPaw} />
+        <div className="landing-cat-paws-container">
+          <img src={longPaw} alt="Left paw" className="landing-cat-paw" />
+          <img src={longPaw} alt="Right paw"className="landing-cat-paw" />
         </div>
       </div>
       <div
@@ -49,21 +49,13 @@ function LandingPage() {
         }}
         onClick={handleButtonClick}
       >
-        <img src={paw} alt="Paw Button" style={styles.pawImage} />
+        <img src={paw} alt="Paw Button" className="landing-paw img" />
       </div>
     </div>
   );
 }
 
 const styles = {
-  container: {
-    position: "relative",
-    display: "flex",
-    flexDirection: "column",
-    height: "100vh",
-    fontFamily: "'Cursive', Arial, sans-serif",
-    overflow: "hidden",
-  },
   topSection: {
     position: "absolute",
     top: "0",
@@ -74,11 +66,6 @@ const styles = {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-  },
-  title: {
-    fontSize: "3rem",
-    fontWeight: "bold",
-    color: "black",
   },
   bottomSection: {
     position: "absolute",
@@ -102,22 +89,6 @@ const styles = {
     alignItems: "center",
     cursor: "pointer",
     transition: "transform 1s ease",
-  },
-  pawImage: {
-    borderRadius: "50%",
-    width: "80%",
-    height: "80%",
-  },
-  catPawsContainer: {
-    display: "flex",
-    justifyContent: "space-around",
-    alignItems: "flex-end",
-    height: "100%",
-    paddingBottom: "20px",
-  },
-  catPaw: {
-    width: "70px",
-    height: "auto",
   },
 };
 
