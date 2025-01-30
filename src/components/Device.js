@@ -8,6 +8,7 @@ function Device({ device, message }) {
 
   const deviceid = device?.id || "Nom inconnu";
   const deviceName = device?.name || "Nom inconnu";
+  const deviceUid = device.uid;
 
   try {
     if (message && message.trim() !== "") {
@@ -28,6 +29,9 @@ function Device({ device, message }) {
     <div style={styles.deviceContainer} onClick={handleClick}>
       <h2 style={styles.title}>{deviceName}</h2>
       <p style={styles.percentage}>Remplissage : {amountValue}</p>
+      <p style={deviceUid ? styles.deviceUid : styles.unpairedDevice}>
+        {deviceUid ? "✔️ Appairé" : "❌ Device non appairé"}
+      </p>
     </div>
   );
 }
@@ -59,6 +63,17 @@ const styles = {
     fontSize: "0.9rem",
     color: "#666",
     marginTop: "10px",
+  },
+  deviceUid: {
+    fontSize: "0.9rem",
+    color: "green", // ✅ Couleur verte si appairé
+    marginTop: "5px",
+  },
+  unpairedDevice: {
+    fontSize: "0.9rem",
+    color: "red", // ❌ Couleur rouge si non appairé
+    fontWeight: "bold",
+    marginTop: "5px",
   },
 };
 
