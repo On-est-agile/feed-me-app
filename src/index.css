@@ -228,3 +228,48 @@ code {
   transition: background-color 0.3s ease;
 }
 
+/* Styles spécifiques au composant Device */
+.device-container {
+  width: 150px;
+  height: 150px;
+  border: 2px solid #ADD8E6;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #f9f9f9;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  padding: 10px;
+  text-align: center;
+}
+
+.device-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin: 0;
+  color: #333;
+  text-transform: capitalize;
+}
+
+.device-percentage {
+  font-size: 0.9rem;
+  color: #666;
+  margin-top: 10px;
+}
+
+.device-uid {
+  font-size: 0.9rem;
+  color: green; /* ✅ Couleur verte si appairé */
+  margin-top: 5px;
+}
+
+.device-unpaired {
+  font-size: 0.9rem;
+  color: red; /* ❌ Couleur rouge si non appairé */
+  font-weight: bold;
+  margin-top: 5px;
+}
+
+
